@@ -1,7 +1,6 @@
-# ⚔️ CodeClash: Real-time 1v1 Competitive Coding Platform
+# CodeClash: Real-time 1v1 Competitive Coding Platform
 
 <!-- TODO: apna GitHub username daalo, CI badge automatically kaam karega -->
-![CI](https://github.com/YOUR_GITHUB_USERNAME/codeclash/actions/workflows/ci.yml/badge.svg)
 
 Two players get the **same problem** at the **same time**. Each one sees the other's progress live. Whoever passes every hidden test case first wins, and both players' **Elo ratings** update right away.
 
