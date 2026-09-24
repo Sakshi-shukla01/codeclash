@@ -1,0 +1,89 @@
+# Har push aur pull request pe yeh sab automatically chalta hai (GitHub Actions).
+# README mein iska green badge lagao: recruiters ko dikhta hai ki project tested hai.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend-unit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+  judge-sandbox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r judge/requirements.txt pytest
+      - name: Build sandbox image
+        run: docker build -t codeclash-sandbox-python:latest judge/sandbox/python
+      - name: Checker tests + sandbox attack tests (infinite loop, memory bomb, fork bomb, network...)
+        working-directory: judge
+        env:
+          JUDGE_MODE: docker
+        run: pytest -v
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm run build
+
+  e2e-battle:
+    # Poora system chalake ek asli 1v1 battle: signup -> matchmaking -> WA -> AC -> rating update
+    runs-on: ubuntu-latest
+    needs: [backend-unit, judge-sandbox]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: codeclash
+          POSTGRES_PASSWORD: codeclash
+          POSTGRES_DB: codeclash
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U codeclash" --health-interval 3s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      DATABASE_URL: postgresql+asyncpg://codeclash:codeclash@localhost:5432/codeclash
+      REDIS_URL: redis://localhost:6379/0
+      JUDGE_MODE: docker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r backend/requirements-dev.txt -r judge/requirements.txt
+      - run: docker build -t codeclash-sandbox-python:latest judge/sandbox/python
+      - name: Start backend + judge worker
+        run: |
+          (cd backend && nohup uvicorn app.main:app --port 8000 > ../backend.log 2>&1 &)
+          (cd judge && nohup python worker.py > ../judge.log 2>&1 &)
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 2; done
+      - name: Run end-to-end battle
+        run: python backend/scripts/e2e_battle.py http://localhost:8000
+      - name: Logs (if failed)
+        if: failure()
+        run: cat backend.log judge.log

@@ -1,0 +1,89 @@
+# CodeClash: poora system ek command mein ->  docker compose up --build
+# Phir browser mein kholo:  http://localhost:3000
+#
+# Services:
+#   postgres        permanent data (users, problems, matches, submissions)
+#   redis           fast temporary data (queues, live battles, pub/sub)
+#   backend         FastAPI API + WebSocket              -> http://localhost:8000/docs
+#   judge           worker jo har submission ko sandbox container mein chalata hai
+#   sandbox-python  sirf sandbox image build karta hai, phir exit ho jaata hai (yeh normal hai)
+#   frontend        React app (nginx), /api aur /ws ko backend pe forward karta hai
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: codeclash
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-codeclash}
+      POSTGRES_DB: codeclash
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codeclash"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://codeclash:${POSTGRES_PASSWORD:-codeclash}@postgres:5432/codeclash
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me-before-deploying-0000}
+      BATTLE_DURATION_SECONDS: ${BATTLE_DURATION_SECONDS:-900}
+      CORS_ORIGINS: http://localhost:3000,http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  sandbox-python:
+    build: ./judge/sandbox/python
+    image: codeclash-sandbox-python:latest
+    command: ["python", "-c", "print('sandbox image ready')"]
+    network_mode: none
+    restart: "no"
+
+  judge:
+    build: ./judge
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      JUDGE_MODE: docker
+      SANDBOX_IMAGE: codeclash-sandbox-python:latest
+    volumes:
+      # Worker host ke Docker se baat karke sandbox containers banata hai.
+      # ⚠️ Production mein judge ko alag VM pe chalao (README ka "Security" section dekho).
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      redis:
+        condition: service_healthy
+      sandbox-python:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:
