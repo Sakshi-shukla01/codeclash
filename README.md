@@ -7,14 +7,6 @@ Two players get the **same problem** at the **same time**. Each one sees the oth
 
 Under the hood, CodeClash is a small **online judge** (like LeetCode or Codeforces). It runs untrusted user code inside **locked-down, disposable Docker containers**, with a Redis-backed job queue and horizontally scalable judge workers.
 
-**🔗 Live demo:** _add your deployed URL here_  ·  **🎥 Demo video:** _add link_
-
-| Lobby | Live battle |
-|---|---|
-| ![Lobby](docs/screenshots/lobby.png) | ![Battle](docs/screenshots/battle.png) |
-| **Wrong answer with sample diff** | **Victory + Elo update** |
-| ![Wrong answer](docs/screenshots/wrong-answer.png) | ![Victory](docs/screenshots/victory.png) |
-
 ---
 
 ## ✨ Features
