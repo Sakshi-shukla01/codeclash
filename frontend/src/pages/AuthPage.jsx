@@ -28,7 +28,7 @@ export default function AuthPage() {
     <div className="auth-page">
       <div className="auth-hero">
         <h1>⚔️ CodeClash</h1>
-        <p className="muted">Real-time 1v1 coding battles. Same problem, same clock. Pehle solve karo, jeet jao.</p>
+        <p className="muted">Real-time 1v1 coding battles. Same problem, same clock. Solve it first to win.</p>
       </div>
       <form className="card auth-card" onSubmit={submit}>
         <div className="tabs">

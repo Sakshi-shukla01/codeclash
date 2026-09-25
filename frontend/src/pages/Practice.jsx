@@ -64,7 +64,7 @@ export default function Practice() {
     <div className="battle">
       <div className="battle-bar practice-bar">
         <Link to="/" className="btn ghost small">← Lobby</Link>
-        <span className="muted">Practice mode · rating pe koi asar nahi</span>
+        <span className="muted">Practice mode · does not affect your rating</span>
       </div>
       <div className="battle-body">
         <div className="pane left"><ProblemView problem={problem} /></div>

@@ -79,7 +79,7 @@ export default function Lobby() {
         {error && <div className="error">{error}</div>}
         {queue.status === "searching" && (
           <p className="muted small tip">
-            Tip: test karne ke liye doosre browser (ya incognito window) mein doosra account banao aur wahan bhi Find Match dabao.
+            Waiting for another player to join the queue. Matches are made with players of similar rating.
           </p>
         )}
       </section>
@@ -102,7 +102,7 @@ export default function Lobby() {
 
         <section className="card">
           <h3>📜 Recent battles</h3>
-          {history.length === 0 && <p className="muted">Abhi tak koi battle nahi. Find Match dabao!</p>}
+          {history.length === 0 && <p className="muted">No battles yet. Click Find Match to start your first one.</p>}
           <ul className="history">
             {history.map((m) => (
               <li key={m.id}>

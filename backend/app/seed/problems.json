@@ -3,7 +3,7 @@
   "slug": "sum-of-two",
   "title": "Sum of Two Numbers",
   "difficulty": "easy",
-  "description": "Do integers `a` aur `b` diye gaye hain. Unka sum print karo.\n\n**Input**\nEk line mein do integers `a` aur `b` (\u221210^18 \u2264 a, b \u2264 10^18).\n\n**Output**\n`a + b` print karo.",
+  "description": "Given two integers `a` and `b`, print their sum.\n\n**Input**\nA single line containing two integers `a` and `b` (\u221210^18 \u2264 a, b \u2264 10^18).\n\n**Output**\nPrint `a + b`.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -58,7 +58,7 @@
   "slug": "palindrome-check",
   "title": "Palindrome Check",
   "difficulty": "easy",
-  "description": "Ek string `s` di gayi hai (sirf lowercase letters). Check karo ki woh palindrome hai ya nahi.\n\n**Input**\nEk line mein string `s` (1 \u2264 |s| \u2264 10^5).\n\n**Output**\nPalindrome hai toh `YES`, warna `NO`.",
+  "description": "Given a string `s` of lowercase English letters, determine whether it reads the same forwards and backwards.\n\n**Input**\nA single line containing the string `s` (1 \u2264 |s| \u2264 10^5).\n\n**Output**\nPrint `YES` if `s` is a palindrome, otherwise print `NO`.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -113,7 +113,7 @@
   "slug": "two-sum",
   "title": "Two Sum",
   "difficulty": "easy",
-  "description": "`n` distinct integers ka array aur ek `target` diya hai. Aise do indices `i < j` dhoondho jinka sum `target` ho. Answer hamesha exactly ek hoga.\n\n**Input**\nPehli line: `n target` (2 \u2264 n \u2264 10^5).\nDoosri line: `n` integers (0-indexed).\n\n**Output**\n`i j` print karo (0-based, i < j).\n\n*Hint:* O(n\u00b2) bade test pe TLE dega. Hash map use karo.",
+  "description": "Given an array of `n` distinct integers and an integer `target`, find two indices `i < j` such that `a[i] + a[j] = target`. It is guaranteed that exactly one such pair exists.\n\n**Input**\nThe first line contains `n` and `target` (2 \u2264 n \u2264 10^5).\nThe second line contains `n` integers (0-indexed).\n\n**Output**\nPrint the two indices `i j` (0-based, i < j).\n\n*Note:* an O(n\u00b2) solution will exceed the time limit on large tests.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -168,7 +168,7 @@
   "slug": "max-subarray-sum",
   "title": "Maximum Subarray Sum",
   "difficulty": "medium",
-  "description": "`n` integers ka array diya hai. Kisi bhi non-empty continuous subarray ka maximum sum print karo.\n\n**Input**\nPehli line: `n` (1 \u2264 n \u2264 10^5).\nDoosri line: `n` integers (|a_i| \u2264 10^9).\n\n**Output**\nMaximum subarray sum.",
+  "description": "Given an array of `n` integers, find the maximum sum of any non-empty contiguous subarray.\n\n**Input**\nThe first line contains `n` (1 \u2264 n \u2264 10^5).\nThe second line contains `n` integers (|a_i| \u2264 10^9).\n\n**Output**\nPrint the maximum subarray sum.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -223,7 +223,7 @@
   "slug": "valid-brackets",
   "title": "Valid Brackets",
   "difficulty": "easy",
-  "description": "Ek string di hai jisme sirf `()[]{}` characters hain. Check karo ki brackets sahi tarah se open aur close hue hain ya nahi.\n\n**Input**\nEk line mein string `s` (1 \u2264 |s| \u2264 10^5).\n\n**Output**\nValid hai toh `YES`, warna `NO`.",
+  "description": "Given a string consisting only of the characters `()[]{}`, determine whether every opening bracket is closed by the same type of bracket in the correct order.\n\n**Input**\nA single line containing the string `s` (1 \u2264 |s| \u2264 10^5).\n\n**Output**\nPrint `YES` if the brackets are valid, otherwise print `NO`.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -278,7 +278,7 @@
   "slug": "fibonacci-mod",
   "title": "Fibonacci Modulo",
   "difficulty": "medium",
-  "description": "`F(0) = 0`, `F(1) = 1`, aur `F(n) = F(n-1) + F(n-2)`. `F(n) mod 1000000007` print karo.\n\n**Input**\nEk integer `n` (0 \u2264 n \u2264 10^6).\n\n**Output**\n`F(n) mod 1000000007`.\n\n*Hint:* recursion bade n pe TLE dega.",
+  "description": "The Fibonacci sequence is defined as `F(0) = 0`, `F(1) = 1`, and `F(n) = F(n-1) + F(n-2)`. Print `F(n) mod 1000000007`.\n\n**Input**\nA single integer `n` (0 \u2264 n \u2264 10^6).\n\n**Output**\nPrint `F(n) mod 1000000007`.\n\n*Note:* a naive recursive solution will exceed the time limit.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -333,7 +333,7 @@
   "slug": "count-primes",
   "title": "Count Primes",
   "difficulty": "medium",
-  "description": "`1` se `n` tak (dono included) kitne prime numbers hain?\n\n**Input**\nEk integer `n` (1 \u2264 n \u2264 10^6).\n\n**Output**\nPrimes ki ginti.\n\n*Hint:* Sieve of Eratosthenes.",
+  "description": "Count the prime numbers between `1` and `n`, inclusive.\n\n**Input**\nA single integer `n` (1 \u2264 n \u2264 10^6).\n\n**Output**\nPrint the number of primes in the range [1, n].\n\n*Hint:* consider the Sieve of Eratosthenes.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -388,7 +388,7 @@
   "slug": "anagram-check",
   "title": "Anagram Check",
   "difficulty": "easy",
-  "description": "Do strings `a` aur `b` di hain. Kya `b`, `a` ka anagram hai (same letters, same count, order alag ho sakta hai)?\n\n**Input**\nPehli line: `a`. Doosri line: `b` (1 \u2264 |a|, |b| \u2264 10^5, lowercase).\n\n**Output**\n`YES` ya `NO`.",
+  "description": "Given two strings `a` and `b`, determine whether `b` is an anagram of `a`, meaning it contains exactly the same letters with the same counts, possibly in a different order.\n\n**Input**\nThe first line contains `a`. The second line contains `b` (1 \u2264 |a|, |b| \u2264 10^5, lowercase letters).\n\n**Output**\nPrint `YES` if `b` is an anagram of `a`, otherwise print `NO`.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -443,7 +443,7 @@
   "slug": "second-largest",
   "title": "Second Largest",
   "difficulty": "easy",
-  "description": "`n` integers diye hain. Second largest **distinct** value print karo. Agar exist nahi karti (sab same hain) toh `NONE` print karo.\n\n**Input**\nPehli line: `n` (1 \u2264 n \u2264 10^5). Doosri line: `n` integers.\n\n**Output**\nSecond largest distinct value, ya `NONE`.",
+  "description": "Given `n` integers, print the second largest **distinct** value. If it does not exist (all values are equal), print `NONE`.\n\n**Input**\nThe first line contains `n` (1 \u2264 n \u2264 10^5). The second line contains `n` integers.\n\n**Output**\nPrint the second largest distinct value, or `NONE`.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [
@@ -498,7 +498,7 @@
   "slug": "most-frequent-word",
   "title": "Most Frequent Word",
   "difficulty": "easy",
-  "description": "`n` words diye hain. Sabse zyada baar aane wala word aur uski count print karo. Tie ho toh alphabetically chhota word chuno.\n\n**Input**\nPehli line: `n` (1 \u2264 n \u2264 10^5). Doosri line: `n` lowercase words.\n\n**Output**\n`word count`.",
+  "description": "Given `n` words, print the word that appears most often, followed by its count. If several words are tied, print the lexicographically smallest one.\n\n**Input**\nThe first line contains `n` (1 \u2264 n \u2264 10^5). The second line contains `n` lowercase words.\n\n**Output**\nPrint `word count`.",
   "time_limit_ms": 2000,
   "memory_limit_mb": 256,
   "test_cases": [

@@ -220,13 +220,13 @@ PROBLEMS = [
         "difficulty": "easy",
         "gen": sum_gen,
         "solve": sum_solve,
-        "description": """Do integers `a` aur `b` diye gaye hain. Unka sum print karo.
+        "description": """Given two integers `a` and `b`, print their sum.
 
 **Input**
-Ek line mein do integers `a` aur `b` (−10^18 ≤ a, b ≤ 10^18).
+A single line containing two integers `a` and `b` (−10^18 ≤ a, b ≤ 10^18).
 
 **Output**
-`a + b` print karo.""",
+Print `a + b`.""",
     },
     {
         "slug": "palindrome-check",
@@ -234,13 +234,13 @@ Ek line mein do integers `a` aur `b` (−10^18 ≤ a, b ≤ 10^18).
         "difficulty": "easy",
         "gen": pal_gen,
         "solve": pal_solve,
-        "description": """Ek string `s` di gayi hai (sirf lowercase letters). Check karo ki woh palindrome hai ya nahi.
+        "description": """Given a string `s` of lowercase English letters, determine whether it reads the same forwards and backwards.
 
 **Input**
-Ek line mein string `s` (1 ≤ |s| ≤ 10^5).
+A single line containing the string `s` (1 ≤ |s| ≤ 10^5).
 
 **Output**
-Palindrome hai toh `YES`, warna `NO`.""",
+Print `YES` if `s` is a palindrome, otherwise print `NO`.""",
     },
     {
         "slug": "two-sum",
@@ -248,16 +248,16 @@ Palindrome hai toh `YES`, warna `NO`.""",
         "difficulty": "easy",
         "gen": twosum_gen,
         "solve": twosum_solve,
-        "description": """`n` distinct integers ka array aur ek `target` diya hai. Aise do indices `i < j` dhoondho jinka sum `target` ho. Answer hamesha exactly ek hoga.
+        "description": """Given an array of `n` distinct integers and an integer `target`, find two indices `i < j` such that `a[i] + a[j] = target`. It is guaranteed that exactly one such pair exists.
 
 **Input**
-Pehli line: `n target` (2 ≤ n ≤ 10^5).
-Doosri line: `n` integers (0-indexed).
+The first line contains `n` and `target` (2 ≤ n ≤ 10^5).
+The second line contains `n` integers (0-indexed).
 
 **Output**
-`i j` print karo (0-based, i < j).
+Print the two indices `i j` (0-based, i < j).
 
-*Hint:* O(n²) bade test pe TLE dega. Hash map use karo.""",
+*Note:* an O(n²) solution will exceed the time limit on large tests.""",
     },
     {
         "slug": "max-subarray-sum",
@@ -265,14 +265,14 @@ Doosri line: `n` integers (0-indexed).
         "difficulty": "medium",
         "gen": kadane_gen,
         "solve": kadane_solve,
-        "description": """`n` integers ka array diya hai. Kisi bhi non-empty continuous subarray ka maximum sum print karo.
+        "description": """Given an array of `n` integers, find the maximum sum of any non-empty contiguous subarray.
 
 **Input**
-Pehli line: `n` (1 ≤ n ≤ 10^5).
-Doosri line: `n` integers (|a_i| ≤ 10^9).
+The first line contains `n` (1 ≤ n ≤ 10^5).
+The second line contains `n` integers (|a_i| ≤ 10^9).
 
 **Output**
-Maximum subarray sum.""",
+Print the maximum subarray sum.""",
     },
     {
         "slug": "valid-brackets",
@@ -280,13 +280,13 @@ Maximum subarray sum.""",
         "difficulty": "easy",
         "gen": brackets_gen,
         "solve": brackets_solve,
-        "description": """Ek string di hai jisme sirf `()[]{}` characters hain. Check karo ki brackets sahi tarah se open aur close hue hain ya nahi.
+        "description": """Given a string consisting only of the characters `()[]{}`, determine whether every opening bracket is closed by the same type of bracket in the correct order.
 
 **Input**
-Ek line mein string `s` (1 ≤ |s| ≤ 10^5).
+A single line containing the string `s` (1 ≤ |s| ≤ 10^5).
 
 **Output**
-Valid hai toh `YES`, warna `NO`.""",
+Print `YES` if the brackets are valid, otherwise print `NO`.""",
     },
     {
         "slug": "fibonacci-mod",
@@ -294,15 +294,15 @@ Valid hai toh `YES`, warna `NO`.""",
         "difficulty": "medium",
         "gen": fib_gen,
         "solve": fib_solve,
-        "description": """`F(0) = 0`, `F(1) = 1`, aur `F(n) = F(n-1) + F(n-2)`. `F(n) mod 1000000007` print karo.
+        "description": """The Fibonacci sequence is defined as `F(0) = 0`, `F(1) = 1`, and `F(n) = F(n-1) + F(n-2)`. Print `F(n) mod 1000000007`.
 
 **Input**
-Ek integer `n` (0 ≤ n ≤ 10^6).
+A single integer `n` (0 ≤ n ≤ 10^6).
 
 **Output**
-`F(n) mod 1000000007`.
+Print `F(n) mod 1000000007`.
 
-*Hint:* recursion bade n pe TLE dega.""",
+*Note:* a naive recursive solution will exceed the time limit.""",
     },
     {
         "slug": "count-primes",
@@ -310,15 +310,15 @@ Ek integer `n` (0 ≤ n ≤ 10^6).
         "difficulty": "medium",
         "gen": primes_gen,
         "solve": primes_solve,
-        "description": """`1` se `n` tak (dono included) kitne prime numbers hain?
+        "description": """Count the prime numbers between `1` and `n`, inclusive.
 
 **Input**
-Ek integer `n` (1 ≤ n ≤ 10^6).
+A single integer `n` (1 ≤ n ≤ 10^6).
 
 **Output**
-Primes ki ginti.
+Print the number of primes in the range [1, n].
 
-*Hint:* Sieve of Eratosthenes.""",
+*Hint:* consider the Sieve of Eratosthenes.""",
     },
     {
         "slug": "anagram-check",
@@ -326,13 +326,13 @@ Primes ki ginti.
         "difficulty": "easy",
         "gen": anagram_gen,
         "solve": anagram_solve,
-        "description": """Do strings `a` aur `b` di hain. Kya `b`, `a` ka anagram hai (same letters, same count, order alag ho sakta hai)?
+        "description": """Given two strings `a` and `b`, determine whether `b` is an anagram of `a`, meaning it contains exactly the same letters with the same counts, possibly in a different order.
 
 **Input**
-Pehli line: `a`. Doosri line: `b` (1 ≤ |a|, |b| ≤ 10^5, lowercase).
+The first line contains `a`. The second line contains `b` (1 ≤ |a|, |b| ≤ 10^5, lowercase letters).
 
 **Output**
-`YES` ya `NO`.""",
+Print `YES` if `b` is an anagram of `a`, otherwise print `NO`.""",
     },
     {
         "slug": "second-largest",
@@ -340,13 +340,13 @@ Pehli line: `a`. Doosri line: `b` (1 ≤ |a|, |b| ≤ 10^5, lowercase).
         "difficulty": "easy",
         "gen": second_gen,
         "solve": second_solve,
-        "description": """`n` integers diye hain. Second largest **distinct** value print karo. Agar exist nahi karti (sab same hain) toh `NONE` print karo.
+        "description": """Given `n` integers, print the second largest **distinct** value. If it does not exist (all values are equal), print `NONE`.
 
 **Input**
-Pehli line: `n` (1 ≤ n ≤ 10^5). Doosri line: `n` integers.
+The first line contains `n` (1 ≤ n ≤ 10^5). The second line contains `n` integers.
 
 **Output**
-Second largest distinct value, ya `NONE`.""",
+Print the second largest distinct value, or `NONE`.""",
     },
     {
         "slug": "most-frequent-word",
@@ -354,13 +354,13 @@ Second largest distinct value, ya `NONE`.""",
         "difficulty": "easy",
         "gen": freq_gen,
         "solve": freq_solve,
-        "description": """`n` words diye hain. Sabse zyada baar aane wala word aur uski count print karo. Tie ho toh alphabetically chhota word chuno.
+        "description": """Given `n` words, print the word that appears most often, followed by its count. If several words are tied, print the lexicographically smallest one.
 
 **Input**
-Pehli line: `n` (1 ≤ n ≤ 10^5). Doosri line: `n` lowercase words.
+The first line contains `n` (1 ≤ n ≤ 10^5). The second line contains `n` lowercase words.
 
 **Output**
-`word count`.""",
+Print `word count`.""",
     },
 ]
 

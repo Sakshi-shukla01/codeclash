@@ -107,3 +107,9 @@ def test_fork_bomb_is_contained():
     assert res[0]["status"] in ("OK", "TLE", "RE")
     if res[0]["status"] == "OK":
         assert res[0]["output"].startswith("LIMITED")
+
+
+def test_unicode_code_and_output():
+    # Windows pe default encoding UTF-8 nahi hoti, yeh test ensure karta hai ki Hindi/emoji wala code chale
+    res = run("# नमस्ते ⚔️\nprint('जीत 🏆')")
+    assert res[0]["status"] == "OK" and res[0]["output"].strip() == "जीत 🏆"

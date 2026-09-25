@@ -29,5 +29,5 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = await db.scalar(select(User).where(User.username == body.username))
     # Same error message dono cases mein -> attacker ko pata nahi chalta ki username exist karta hai ya nahi
     if not user or not verify_password(body.password, user.password_hash):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Wrong username or password")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid username or password")
     return TokenResponse(access_token=create_access_token(user.id), user=UserOut.model_validate(user))

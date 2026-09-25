@@ -13,7 +13,7 @@ export const STARTER_CODE = `import sys
 
 def main():
     data = sys.stdin.read().split()
-    # apna code yahan likho
+    # write your solution here
     print(data)
 
 main()

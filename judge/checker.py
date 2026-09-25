@@ -80,7 +80,7 @@ def judge(job: dict, run: Callable) -> dict:
     test = tests[idx]
     if test.get("is_sample"):
         # Sample test pe poori details dikhao, taaki user debug kar sake
-        result["message"] = f"{verdict} on sample test #{idx + 1}"
+        result["message"] = f"Failed on sample test {idx + 1}"
         result["details"] = {
             "input": _clip(test["input"]),
             "expected": _clip(test["expected"]),
@@ -89,5 +89,5 @@ def judge(job: dict, run: Callable) -> dict:
         }
     else:
         # Hidden test ka input/output leak nahi karna (warna log answers "print" karke cheat karenge)
-        result["message"] = f"{verdict} on hidden test #{idx + 1}"
+        result["message"] = f"Failed on hidden test {idx + 1}"
     return result

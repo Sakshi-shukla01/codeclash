@@ -35,11 +35,11 @@ async def submit(body: SubmitRequest, user: User = Depends(get_current_user), db
         if not problem_id:
             raise HTTPException(404, "Problem not found")
     else:
-        raise HTTPException(400, "Give match_id or problem_slug")
+        raise HTTPException(400, "Either match_id or problem_slug is required")
 
     # Rate limit: ek user har few seconds mein sirf ek submission
     if not await redis_client.set(Keys.submit_cooldown(user.id), "1", nx=True, ex=settings.SUBMIT_COOLDOWN_SECONDS):
-        raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Slow down! Wait a few seconds.")
+        raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many submissions. Please wait a few seconds and try again.")
 
     problem = await load_problem(db, problem_id)
     sub = Submission(user_id=user.id, problem_id=problem_id, match_id=body.match_id,

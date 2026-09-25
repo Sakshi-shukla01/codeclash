@@ -131,7 +131,7 @@ export default function Battle() {
   };
 
   const forfeit = async () => {
-    if (!window.confirm("Sach mein haar maan loge? Rating ghategi.")) return;
+    if (!window.confirm("Are you sure you want to forfeit? This counts as a loss and lowers your rating.")) return;
     await api(`/matches/${matchId}/forfeit`, { method: "POST" }).catch((e) => setSubmitError(e.message));
   };
 
@@ -141,9 +141,12 @@ export default function Battle() {
   const finished = match.status === "finished";
   const iWon = match.winner_id === user.id;
   const change = ending ? ending.rating_change : match.my_rating_change;
-  const reasonText = { accepted: "solved it first", timeout: "time up", forfeit: "forfeit" }[
-    ending?.reason || match.end_reason
-  ];
+  const reason = ending?.reason || match.end_reason;
+  const reasonText = {
+    accepted: iWon ? "You solved it first" : `${match.opponent.username} solved it first`,
+    timeout: match.is_draw ? "Time's up with equal progress" : iWon ? "Time's up · you passed more tests" : "Time's up · opponent passed more tests",
+    forfeit: iWon ? `${match.opponent.username} forfeited` : "You forfeited",
+  }[reason];
 
   return (
     <div className="battle">

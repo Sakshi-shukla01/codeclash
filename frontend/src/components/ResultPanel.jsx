@@ -16,7 +16,7 @@ export default function ResultPanel({ result, judging, error }) {
         <div className="verdict judging"><span className="spinner" /> Judging in sandbox…</div>
       </div>
     );
-  if (!result) return <div className="result-panel muted">Submit karo, result yahan aayega.</div>;
+  if (!result) return <div className="result-panel muted">Submit your code to see the results here.</div>;
 
   const d = result.details;
   return (

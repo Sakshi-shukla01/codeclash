@@ -9,6 +9,7 @@ Do modes hain (JUDGE_MODE env variable se):
 import json
 import logging
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -53,10 +54,12 @@ def run_in_sandbox(code: str, inputs: list[str], time_limit_ms: int, memory_limi
     # poore container ka max time: har test ka time limit + container start hone ka time
     overall_timeout = len(inputs) * (time_limit_ms / 1000 + 0.5) + 15
 
+    workdir = None
     if JUDGE_MODE == "local":
         workdir = tempfile.mkdtemp(prefix="cc-sbx-")
         cmd = [sys.executable, str(RUNNER_PATH)]
-        env = {**os.environ, "SANDBOX_WORKDIR": workdir}
+        # PYTHONUTF8: Windows pe bhi UTF-8 use ho (warna Hindi/emoji wale code pe crash)
+        env = {**os.environ, "SANDBOX_WORKDIR": workdir, "PYTHONUTF8": "1"}
         name = None
     else:
         name = f"cc-sbx-{uuid.uuid4().hex[:12]}"
@@ -65,7 +68,8 @@ def run_in_sandbox(code: str, inputs: list[str], time_limit_ms: int, memory_limi
 
     try:
         proc = subprocess.run(
-            cmd, input=payload, capture_output=True, text=True, timeout=overall_timeout, env=env
+            cmd, input=payload, capture_output=True, text=True, encoding="utf-8",
+            errors="replace", timeout=overall_timeout, env=env,
         )
     except subprocess.TimeoutExpired:
         if name:
@@ -73,6 +77,9 @@ def run_in_sandbox(code: str, inputs: list[str], time_limit_ms: int, memory_limi
         raise SandboxError("sandbox overall timeout")
     except FileNotFoundError as e:
         raise SandboxError(f"docker CLI not found: {e}")
+    finally:
+        if workdir:
+            shutil.rmtree(workdir, ignore_errors=True)
 
     try:
         return json.loads(proc.stdout)
