@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api.js";
-import CodeEditor, { STARTER_CODE } from "../components/CodeEditor.jsx";
+import CodeEditor, { LanguageSelect } from "../components/CodeEditor.jsx";
 import ProblemView from "../components/ProblemView.jsx";
 import ResultPanel from "../components/ResultPanel.jsx";
+import { loadCode, loadPreferredLanguage, saveCode, savePreferredLanguage } from "../languages.js";
 import { useSession } from "../session.jsx";
 
 export default function Practice() {
   const { slug } = useParams();
   const { subscribe } = useSession();
   const [problem, setProblem] = useState(null);
-  const [code, setCode] = useState(STARTER_CODE);
+  const [language, setLanguage] = useState(loadPreferredLanguage);
+  const [code, setCode] = useState(() => loadCode(`practice_${slug}`, loadPreferredLanguage()));
   const [judging, setJudging] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
@@ -21,6 +23,7 @@ export default function Practice() {
 
   useEffect(() => {
     setResult(null);
+    setCode(loadCode(`practice_${slug}`, language));
     api(`/problems/${slug}`).then(setProblem).catch((e) => setError(e.message));
   }, [slug]);
 
@@ -39,12 +42,23 @@ export default function Practice() {
     [subscribe]
   );
 
+  const onCodeChange = (v) => {
+    setCode(v);
+    saveCode(`practice_${slug}`, language, v);
+  };
+
+  const changeLanguage = (id) => {
+    setLanguage(id);
+    savePreferredLanguage(id);
+    setCode(loadCode(`practice_${slug}`, id));
+  };
+
   const submit = async () => {
     setError("");
     setResult(null);
     setJudging(true);
     try {
-      const sub = await api("/submissions", { method: "POST", body: { problem_slug: slug, code } });
+      const sub = await api("/submissions", { method: "POST", body: { problem_slug: slug, code, language } });
       const early = earlyResults.current[sub.id];
       if (early) {
         setResult(early);
@@ -69,7 +83,10 @@ export default function Practice() {
       <div className="battle-body">
         <div className="pane left"><ProblemView problem={problem} /></div>
         <div className="pane right">
-          <CodeEditor value={code} onChange={setCode} />
+          <div className="editor-toolbar">
+            <LanguageSelect value={language} onChange={changeLanguage} />
+          </div>
+          <CodeEditor value={code} onChange={onCodeChange} language={language} />
           <div className="actions">
             <button className="btn primary" onClick={submit} disabled={judging}>
               {judging ? "Judging…" : "Submit ▶"}

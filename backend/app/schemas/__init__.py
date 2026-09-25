@@ -3,6 +3,7 @@ Pydantic schemas: request/response ka format.
 FastAPI inse automatically validation karta hai aur /docs pe documentation banata hai.
 """
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -58,7 +59,8 @@ class ProblemDetail(ProblemSummary):
 # ------------------------------------------------------------------ submissions
 class SubmitRequest(BaseModel):
     code: str = Field(min_length=1)
-    language: str = "python"
+    # Supported languages (judge/sandbox/python/runner.py ke LANGUAGES se match karna chahiye)
+    language: Literal["python", "cpp", "c", "java", "javascript"] = "python"
     match_id: int | None = None       # battle ke andar submit
     problem_slug: str | None = None   # practice mode submit
 

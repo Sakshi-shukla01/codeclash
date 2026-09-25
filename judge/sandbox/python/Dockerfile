@@ -1,9 +1,14 @@
 # Sandbox image: isi image mein users ka code chalta hai.
-# Chhoti image rakhi hai, koi extra tool nahi, taaki attack surface kam ho.
+# Supported languages: Python, C++ (g++), C (gcc), Java (JDK), JavaScript (Node.js)
+# (Folder ka naam "python" purana hai, image ab saari languages ke liye hai.)
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends g++ gcc libc6-dev default-jdk-headless nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY runner.py /runner.py
 

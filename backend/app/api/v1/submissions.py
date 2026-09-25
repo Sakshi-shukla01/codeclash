@@ -20,8 +20,6 @@ async def submit(body: SubmitRequest, user: User = Depends(get_current_user), db
     Code submit karo. Yeh turant '202 queued' return karta hai. Asli result judge chalane ke baad
     WebSocket pe 'submission_result' event se aata hai (async processing).
     """
-    if body.language != "python":
-        raise HTTPException(400, "Only Python is supported right now")
     if len(body.code) > settings.MAX_CODE_LENGTH:
         raise HTTPException(400, "Code too long")
 

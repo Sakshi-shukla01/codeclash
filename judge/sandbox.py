@@ -37,9 +37,10 @@ def docker_command(container_name: str, memory_limit_mb: int) -> list[str]:
         f"--memory={memory_limit_mb}m",          # RAM limit
         f"--memory-swap={memory_limit_mb}m",     # swap bhi band (warna limit bypass)
         "--cpus=1",                              # max 1 CPU core
-        "--pids-limit=64",                       # fork bomb se bachav
+        "--pids-limit=128",                      # fork bomb se bachav (Java/Node threads ke liye 128)
         "--read-only",                           # root filesystem read-only
-        "--tmpfs", "/tmp:rw,size=64m,mode=1777", # sirf /tmp mein likh sakta hai (64MB)
+        # sirf /tmp mein likh sakta hai (128MB). "exec" isliye ki C++/C ka compiled program yahin se chalta hai
+        "--tmpfs", "/tmp:rw,exec,size=128m,mode=1777",
         "--user", "65534:65534",                 # nobody user, root nahi
         "--cap-drop=ALL",                        # saari Linux capabilities hatao
         "--security-opt", "no-new-privileges",   # sudo/setuid se power nahi badha sakta
@@ -48,11 +49,15 @@ def docker_command(container_name: str, memory_limit_mb: int) -> list[str]:
     ]
 
 
-def run_in_sandbox(code: str, inputs: list[str], time_limit_ms: int, memory_limit_mb: int) -> dict:
-    """Code ko saare inputs pe chalao. Return: {"results": [...]} (runner.py ka output)."""
-    payload = json.dumps({"code": code, "inputs": inputs, "time_limit_ms": time_limit_ms})
-    # poore container ka max time: har test ka time limit + container start hone ka time
-    overall_timeout = len(inputs) * (time_limit_ms / 1000 + 0.5) + 15
+def run_in_sandbox(code: str, inputs: list[str], time_limit_ms: int, memory_limit_mb: int,
+                   language: str = "python") -> dict:
+    """
+    Code ko saare inputs pe chalao. Return (runner.py ka output):
+      {"results": [...]}  ya  {"compile_error": "..."}  ya  {"judge_error": "..."}
+    """
+    payload = json.dumps({"code": code, "language": language, "inputs": inputs, "time_limit_ms": time_limit_ms})
+    # poore sandbox ka max time: compile (max 30s) + har test ka time limit (Java ko 2x) + startup
+    overall_timeout = 30 + len(inputs) * (time_limit_ms / 1000 * 2 + 0.5) + 15
 
     workdir = None
     if JUDGE_MODE == "local":

@@ -19,7 +19,7 @@ export default function ProblemView({ problem }) {
         <span className={`badge diff-${problem.difficulty}`}>{problem.difficulty}</span>
       </div>
       <div className="limits muted">
-        ⏱ {problem.time_limit_ms / 1000}s · 💾 {problem.memory_limit_mb}MB · 🐍 Python 3
+        ⏱ {problem.time_limit_ms / 1000}s · 💾 {problem.memory_limit_mb}MB
       </div>
       {paragraphs.map((para, i) => (
         <p key={i}>

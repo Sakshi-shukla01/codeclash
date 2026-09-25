@@ -5,7 +5,7 @@ Verdicts:
   AC  = Accepted              WA  = Wrong Answer
   TLE = Time Limit Exceeded   RE  = Runtime Error
   MLE = Memory Limit Exceeded OLE = Output Limit Exceeded
-  IE  = Internal Error (humari galti, user ki nahi)
+  CE  = Compilation Error     IE  = Internal Error (humari galti, user ki nahi)
 """
 from typing import Callable
 
@@ -36,16 +36,24 @@ def judge(job: dict, run: Callable) -> dict:
     total = len(tests)
     base = {"submission_id": job["submission_id"], "total": total}
 
-    if job.get("language", "python") != "python":
-        return {**base, "verdict": "IE", "passed": 0, "runtime_ms": 0,
-                "tests": [], "message": "Only Python is supported right now."}
+    skipped = [{"verdict": "SKIPPED", "time_ms": 0} for _ in tests]
 
     sandbox_out = run(
         code=job["code"],
+        language=job.get("language", "python"),
         inputs=[t["input"] for t in tests],
         time_limit_ms=job["time_limit_ms"],
         memory_limit_mb=job["memory_limit_mb"],
     )
+
+    if "compile_error" in sandbox_out:
+        # Compile error user ke apne code ka hai, isliye poora message dikhana safe hai
+        return {**base, "verdict": "CE", "passed": 0, "runtime_ms": 0, "tests": skipped,
+                "message": "Compilation error", "details": {"stderr": sandbox_out["compile_error"]}}
+    if "judge_error" in sandbox_out:
+        return {**base, "verdict": "IE", "passed": 0, "runtime_ms": 0, "tests": skipped,
+                "message": sandbox_out["judge_error"]}
+
     results = sandbox_out.get("results", [])
 
     per_test, passed, first_fail, max_time = [], 0, None, 0

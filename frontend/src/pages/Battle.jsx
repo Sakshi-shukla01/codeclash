@@ -1,20 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../api.js";
-import CodeEditor, { STARTER_CODE } from "../components/CodeEditor.jsx";
+import CodeEditor, { LanguageSelect } from "../components/CodeEditor.jsx";
 import ProblemView from "../components/ProblemView.jsx";
 import ResultPanel from "../components/ResultPanel.jsx";
+import { loadCode, loadPreferredLanguage, saveCode, savePreferredLanguage } from "../languages.js";
 import { useSession } from "../session.jsx";
-
-const codeKey = (id) => `codeclash_code_match_${id}`;
-
-function loadCode(id) {
-  try {
-    return localStorage.getItem(codeKey(id)) || STARTER_CODE;
-  } catch {
-    return STARTER_CODE;
-  }
-}
 
 function Countdown({ endsAt, stopped }) {
   const [now, setNow] = useState(Date.now() / 1000);
@@ -53,7 +44,8 @@ export default function Battle() {
 
   const [match, setMatch] = useState(null);
   const [loadError, setLoadError] = useState("");
-  const [code, setCode] = useState(() => loadCode(matchId));
+  const [language, setLanguage] = useState(loadPreferredLanguage);
+  const [code, setCode] = useState(() => loadCode(`match_${matchId}`, loadPreferredLanguage()));
   const [myPassed, setMyPassed] = useState(0);
   const [oppPassed, setOppPassed] = useState(0);
   const [oppTyping, setOppTyping] = useState(false);
@@ -107,11 +99,7 @@ export default function Battle() {
 
   const onCodeChange = (v) => {
     setCode(v);
-    try {
-      localStorage.setItem(codeKey(matchId), v);
-    } catch {
-      /* ignore */
-    }
+    saveCode(`match_${matchId}`, language, v);
     const now = Date.now();
     if (now - lastTypingSent.current > 1500) {
       lastTypingSent.current = now;
@@ -119,11 +107,17 @@ export default function Battle() {
     }
   };
 
+  const changeLanguage = (id) => {
+    setLanguage(id);
+    savePreferredLanguage(id);
+    setCode(loadCode(`match_${matchId}`, id)); // har language ka code alag save hota hai
+  };
+
   const submit = async () => {
     setSubmitError("");
     setJudging(true);
     try {
-      await api("/submissions", { method: "POST", body: { match_id: matchId, code } });
+      await api("/submissions", { method: "POST", body: { match_id: matchId, code, language } });
     } catch (e) {
       setJudging(false);
       setSubmitError(e.message);
@@ -164,7 +158,10 @@ export default function Battle() {
       <div className="battle-body">
         <div className="pane left"><ProblemView problem={match.problem} /></div>
         <div className="pane right">
-          <CodeEditor value={code} onChange={onCodeChange} readOnly={finished} />
+          <div className="editor-toolbar">
+            <LanguageSelect value={language} onChange={changeLanguage} disabled={finished} />
+          </div>
+          <CodeEditor value={code} onChange={onCodeChange} language={language} readOnly={finished} />
           <div className="actions">
             <button className="btn primary" onClick={submit} disabled={judging || finished}>
               {judging ? "Judging…" : "Submit ▶"}

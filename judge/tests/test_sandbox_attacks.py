@@ -113,3 +113,60 @@ def test_unicode_code_and_output():
     # Windows pe default encoding UTF-8 nahi hoti, yeh test ensure karta hai ki Hindi/emoji wala code chale
     res = run("# नमस्ते ⚔️\nprint('जीत 🏆')")
     assert res[0]["status"] == "OK" and res[0]["output"].strip() == "जीत 🏆"
+
+
+# ------------------------------------------------------------------ multi-language
+# Local mode mein yeh tests tabhi chalte hain jab us language ka compiler laptop pe installed ho.
+SUM = {
+    "python": "a, b = map(int, input().split())\nprint(a + b)",
+    "cpp": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){long long a,b;cin>>a>>b;cout<<a+b<<endl;}",
+    "c": "#include <stdio.h>\nint main(void){long long a,b;scanf(\"%lld %lld\",&a,&b);printf(\"%lld\\n\",a+b);return 0;}",
+    "java": "import java.util.*;\npublic class Main{public static void main(String[] x){Scanner s=new Scanner(System.in);"
+            "long a=s.nextLong(),b=s.nextLong();System.out.println(a+b);}}",
+    "javascript": "const [a,b]=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(BigInt);console.log((a+b).toString());",
+}
+TOOLS = {"python": None, "cpp": "g++", "c": "gcc", "java": "javac", "javascript": "node"}
+
+
+def lang_available(lang):
+    return MODE == "docker" or TOOLS[lang] is None or shutil.which(TOOLS[lang]) is not None
+
+
+def run_lang(lang, code, inputs=("",), tl=2000):
+    return run_in_sandbox(code, list(inputs), time_limit_ms=tl, memory_limit_mb=256, language=lang)
+
+
+@pytest.mark.parametrize("lang", list(SUM))
+def test_each_language_solves_sum(lang):
+    if not lang_available(lang):
+        pytest.skip(f"{TOOLS[lang]} not installed")
+    out = run_lang(lang, SUM[lang], ["2 3\n", "1000000000000 7\n"])
+    assert "results" in out, out
+    assert [r["output"].strip() for r in out["results"]] == ["5", "1000000000007"]
+
+
+@pytest.mark.parametrize("lang,code", [
+    ("cpp", "int main( { return 0; }"),
+    ("c", "int main(void) { return 0 }"),
+    ("java", "public class Main { public static void main(String[] a) { int x = } }"),
+])
+def test_compile_errors_are_reported(lang, code):
+    if not lang_available(lang):
+        pytest.skip(f"{TOOLS[lang]} not installed")
+    out = run_lang(lang, code)
+    assert "compile_error" in out and out["compile_error"]
+
+
+@pytest.mark.parametrize("lang,code", [
+    ("cpp", "int main(){ while(true){} }"),
+    ("java", "public class Main{public static void main(String[] a){while(true){}}}"),
+    ("javascript", "while(true){}"),
+])
+def test_infinite_loop_tle_in_other_languages(lang, code):
+    if not lang_available(lang):
+        pytest.skip(f"{TOOLS[lang]} not installed")
+    assert run_lang(lang, code, tl=500)["results"][0]["status"] == "TLE"
+
+
+def test_unknown_language_is_judge_error():
+    assert "judge_error" in run_lang("cobol", "DISPLAY 'HI'.")

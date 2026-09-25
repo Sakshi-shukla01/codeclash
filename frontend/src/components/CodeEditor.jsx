@@ -3,28 +3,36 @@
 import Editor, { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import "monaco-editor/esm/vs/basic-languages/python/python.contribution";
+import "monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution"; // C aur C++ dono
+import "monaco-editor/esm/vs/basic-languages/java/java.contribution";
+import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
 import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import { LANGUAGES, getLanguage } from "../languages.js";
 
 self.MonacoEnvironment = { getWorker: () => new EditorWorker() };
 loader.config({ monaco });
 window.monaco = monaco; // debugging/automated tests ke liye
 
-export const STARTER_CODE = `import sys
+export function LanguageSelect({ value, onChange, disabled }) {
+  const hint = getLanguage(value).hint;
+  return (
+    <div className="lang-select">
+      <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} aria-label="Language">
+        {LANGUAGES.map((l) => (
+          <option key={l.id} value={l.id}>{l.label}</option>
+        ))}
+      </select>
+      {hint && <span className="muted small">{hint}</span>}
+    </div>
+  );
+}
 
-def main():
-    data = sys.stdin.read().split()
-    # write your solution here
-    print(data)
-
-main()
-`;
-
-export default function CodeEditor({ value, onChange, readOnly = false }) {
+export default function CodeEditor({ value, onChange, language = "python", readOnly = false }) {
   return (
     <div className="editor-wrap">
       <Editor
         height="100%"
-        language="python"
+        language={getLanguage(language).monaco}
         theme="vs-dark"
         value={value}
         onChange={(v) => onChange(v ?? "")}
